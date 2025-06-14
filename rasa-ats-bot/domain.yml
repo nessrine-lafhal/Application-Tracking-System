@@ -1,0 +1,105 @@
+version: "3.1"
+
+intents:
+  - greet
+  - goodbye
+  - affirm
+  - deny
+  - start_interview
+  - provide_cv
+  - provide_job_offer
+  - answer_question
+  - ask_score
+  - restart
+  - stop
+  - out_of_scope
+
+entities:
+  - skill
+  - experience_years
+  - technology
+  - education_level
+  - availability
+  - salary_expectation
+
+slots:
+  cv_text:
+    type: text
+    mappings:
+    - type: from_text
+      conditions:
+      - active_loop: cv_form
+        requested_slot: cv_text
+  
+  job_offer_text:
+    type: text
+    mappings:
+    - type: from_text
+      conditions:
+      - active_loop: job_form
+        requested_slot: job_offer_text
+  
+  current_question:
+    type: text
+    mappings:
+    - type: custom
+  
+  question_answers:
+    type: any
+    mappings:
+    - type: custom
+  
+  interview_score:
+    type: float
+    initial_value: 0.0
+    mappings:
+    - type: custom
+  
+  ats_score:
+    type: float
+    initial_value: 0.0
+    mappings:
+    - type: custom
+
+forms:
+  cv_form:
+    required_slots:
+    - cv_text
+  
+  job_form:
+    required_slots:
+    - job_offer_text
+
+responses:
+  utter_greet:
+  - text: "Bonjour ! Je suis votre assistant ATS intelligent. Je vais analyser votre CV par rapport à une offre d'emploi et vous poser quelques questions pour évaluer votre profil. Commençons ?"
+  
+  utter_goodbye:
+  - text: "Au revoir ! Bonne chance pour votre candidature !"
+  
+  utter_ask_cv_text:
+  - text: "Veuillez coller le texte de votre CV ici :"
+  
+  utter_ask_job_offer_text:
+  - text: "Maintenant, veuillez coller le texte de l'offre d'emploi :"
+  
+  utter_analysis_complete:
+  - text: "Parfait ! J'ai analysé votre CV et l'offre d'emploi. Maintenant, je vais vous poser quelques questions personnalisées pour compléter l'évaluation."
+  
+  utter_interview_complete:
+  - text: "Merci pour vos réponses ! Je calcule votre score final..."
+  
+  utter_out_of_scope:
+  - text: "Je ne peux pas répondre à cela. Concentrons-nous sur l'évaluation de votre profil."
+
+actions:
+  - action_analyze_documents
+  - action_generate_questions
+  - action_ask_next_question
+  - action_process_answer
+  - action_calculate_final_score
+  - action_provide_feedback
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: false
